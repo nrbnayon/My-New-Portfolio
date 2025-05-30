@@ -14,6 +14,14 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const client = await clientPromise
     const db = client.db("Portfolio")
 
+    const { title, description, technologies } = body;
+    if (!title || !description || !technologies) {
+      return NextResponse.json(
+        { error: "Can't be empty fields: title, description, technologies" },
+        { status: 400 }
+      );
+    }
+
     const result = await db.collection("projects").updateOne(
       { _id: new ObjectId(params.id) },
       {

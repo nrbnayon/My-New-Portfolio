@@ -1,10 +1,11 @@
+// lib\seed-data.ts
 // Initial data for seeding the database
 export const initialProjects = [
   {
     title: "LMS - Learning Management System",
     description:
       "An online platform for seamless learning management and class interactions using the MERN stack. Features include payment integration with Stripe, real-time updates, and user favorites and reviews system.",
-    image: "/placeholder.svg?height=300&width=600",
+    images: "/placeholder.svg?height=300&width=600",
     technologies: ["ReactJS", "Stripe", "Express JS", "NodeJS", "MongoDB", "Tailwind CSS", "Firebase", "Component UI"],
     liveLink: "#",
     clientRepo: "https://github.com/nrbnayon/LMS-client",

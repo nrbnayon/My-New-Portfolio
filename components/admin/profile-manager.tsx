@@ -1,3 +1,4 @@
+// components\admin\profile-manager.tsx
 "use client"
 
 import { useState, useEffect } from "react"
