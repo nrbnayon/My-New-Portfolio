@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Download, Heart, Code2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { TypeAnimation } from "react-type-animation";
-import { CodingAvatar } from "@/components/ui/coding-avatar";
 import { useRef } from "react";
 
 export default function HeroFuturistic() {

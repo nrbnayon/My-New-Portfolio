@@ -138,18 +138,18 @@
   0%,
   20% {
     color: rgba(0, 0, 0, 0);
-    text-shadow: .25em 0 0 rgba(0, 0, 0, 0), .5em 0 0 rgba(0, 0, 0, 0);
+    text-shadow: 0.25em 0 0 rgba(0, 0, 0, 0), 0.5em 0 0 rgba(0, 0, 0, 0);
   }
   40% {
     color: white;
-    text-shadow: .25em 0 0 rgba(0, 0, 0, 0), .5em 0 0 rgba(0, 0, 0, 0);
+    text-shadow: 0.25em 0 0 rgba(0, 0, 0, 0), 0.5em 0 0 rgba(0, 0, 0, 0);
   }
   60% {
-    text-shadow: .25em 0 0 white, .5em 0 0 rgba(0, 0, 0, 0);
+    text-shadow: 0.25em 0 0 white, 0.5em 0 0 rgba(0, 0, 0, 0);
   }
   80%,
   100% {
-    text-shadow: .25em 0 0 white, .5em 0 0 white;
+    text-shadow: 0.25em 0 0 white, 0.5em 0 0 white;
   }
 }
 
@@ -331,15 +331,18 @@ body.cursor-none * {
 
 /* Neon glow utilities */
 .neon-blue {
-  box-shadow: 0 0 5px #00f5ff, 0 0 10px #00f5ff, 0 0 15px #00f5ff, 0 0 20px #00f5ff;
+  box-shadow: 0 0 5px #00f5ff, 0 0 10px #00f5ff, 0 0 15px #00f5ff,
+    0 0 20px #00f5ff;
 }
 
 .neon-purple {
-  box-shadow: 0 0 5px #8b5cf6, 0 0 10px #8b5cf6, 0 0 15px #8b5cf6, 0 0 20px #8b5cf6;
+  box-shadow: 0 0 5px #8b5cf6, 0 0 10px #8b5cf6, 0 0 15px #8b5cf6,
+    0 0 20px #8b5cf6;
 }
 
 .neon-green {
-  box-shadow: 0 0 5px #10b981, 0 0 10px #10b981, 0 0 15px #10b981, 0 0 20px #10b981;
+  box-shadow: 0 0 5px #10b981, 0 0 10px #10b981, 0 0 15px #10b981,
+    0 0 20px #10b981;
 }
 
 /* Cyberpunk grid */
@@ -369,7 +372,12 @@ html {
 
 /* Loading states */
 .loading-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -381,4 +389,59 @@ html {
   100% {
     background-position: 200% 0;
   }
+}
+
+/* Glow Card Styles */
+.glow-container {
+  --gap: 32px;
+  --blur: 12px;
+  --spread: 80px;
+  --direction: row;
+}
+
+.glow-card {
+  --active: 0;
+  --start: 0;
+}
+
+.glow-card .glows {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  filter: blur(calc(var(--blur) * 1px));
+}
+
+.glow-card .glows::before,
+.glow-card .glows::after {
+  --alpha: 0;
+  content: "";
+  background: conic-gradient(
+    from calc(var(--start) * 1deg),
+    transparent 0deg,
+    hsl(var(--primary)) calc(var(--spread) * 1deg),
+    transparent calc(var(--spread) * 2deg)
+  );
+  position: absolute;
+  inset: calc(var(--border-width, 1) * -1px);
+  border-radius: inherit;
+  opacity: calc(var(--active, 0) * var(--alpha));
+  transition: opacity 0.2s;
+}
+
+.glow-card .glows::before {
+  --alpha: 0.5;
+}
+
+.glow-card .glows::after {
+  --alpha: 1;
+  --spread: 120;
+  filter: blur(calc(var(--blur) * 0.5px));
+}
+
+.glow-card:hover .glows::before {
+  --alpha: 0.8;
+}
+
+.glow-card:hover .glows::after {
+  --alpha: 1;
 }
