@@ -1,3 +1,4 @@
+// app\api\messages\route.ts
 import { type NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import clientPromise from "@/lib/mongodb"

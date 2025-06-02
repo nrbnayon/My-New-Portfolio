@@ -33,6 +33,38 @@ type Message = {
   timestamp: Date;
 };
 
+// Badge component for active status indicator
+const ActiveBadge = ({
+  isActive = true,
+  size = "default",
+  className = "",
+}: {
+  isActive?: boolean;
+  size?: "small" | "default" | "large";
+  className?: string;
+}) => {
+  const sizeClasses = {
+    small: "w-2.5 h-2.5",
+    default: "w-3 h-3",
+    large: "w-4 h-4",
+  };
+
+  const statusClasses = isActive
+    ? "bg-green-500 border-green-400"
+    : "bg-gray-400 border-gray-300";
+
+  return (
+    <div
+      className={cn(
+        "absolute top-0 right-1 border-2 border-white rounded-full shadow-sm",
+        sizeClasses[size],
+        statusClasses,
+        className
+      )}
+    />
+  );
+};
+
 export function AIChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -45,6 +77,7 @@ export function AIChat() {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isAIActive, setIsAIActive] = useState(true); // State for AI active status
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -58,6 +91,11 @@ export function AIChat() {
       scrollToBottom();
     }
   }, [messages, isOpen, isLoading]);
+
+  // Simulate AI activity status based on loading state
+  useEffect(() => {
+    setIsAIActive(!isLoading);
+  }, [isLoading]);
 
   // Clear all messages
   const handleClearChat = () => {
@@ -95,35 +133,35 @@ export function AIChat() {
 
       const prompt = `You are a friendly and helpful AI assistant for Nayon Kanti Halder's portfolio website. Be conversational, warm, and use emojis occasionally to make the chat feel natural and engaging.
 
-About Nayon:
-- Full Stack Developer specializing in MERN stack 💻
-- Currently working at Join Venture AI Artificial Intelligence (JVAI) since January 2025
-- Previously Software Engineer Intern at Innovate International Ltd (October 2024 – December 2024)
-- BSc in Computer Science and Engineering from United International University (2019-2023)
-- Skills: React.js, Next.js, Node.js, Express.js, MongoDB, TypeScript, JavaScript, Tailwind CSS, and more
-- Location: Vatara, Dhaka, Bangladesh 🇧🇩
-- Email: nrbnayon@gmail.com
-- Phone: +880 1934025581
-- GitHub: https://github.com/nrbnayon
-- LinkedIn: https://www.linkedin.com/in/itsnayon
+        About Nayon:
+        - Full Stack Developer specializing in MERN stack 💻
+        - Currently working at Join Venture AI Artificial Intelligence (JVAI) since January 2025
+        - Previously Software Engineer Intern at Innovate International Ltd (October 2024 – December 2024)
+        - BSc in Computer Science and Engineering from United International University (2019-2023)
+        - Skills: React.js, Next.js, Node.js, Express.js, MongoDB, TypeScript, JavaScript, Tailwind CSS, and more
+        - Location: Vatara, Dhaka, Bangladesh 🇧🇩
+        - Email: nrbnayon@gmail.com
+        - Phone: +8801934025581
+        - GitHub: https://github.com/nrbnayon
+        - LinkedIn: https://www.linkedin.com/in/itsnayon
 
-Key Projects:
-- LMS (Learning Management System): Comprehensive online learning platform with payment integration using Stripe 📚
-- RMS (Restaurant Management System): Modern food ordering website with real-time updates 🍽️
+        Key Projects:
+        - LMS (Learning Management System): Comprehensive online learning platform with payment integration using Stripe 📚
+        - RMS (Restaurant Management System): Modern food ordering website with real-time updates 🍽️
 
-Be helpful, friendly, and professional. Keep responses concise but informative. If you don't know specific details, encourage visitors to contact Nayon directly. Use a conversational tone as if you're chatting with a friend.
+        Be helpful, friendly, and professional. Keep responses concise but informative. If you don't know specific details, encourage visitors to contact Nayon directly. Use a conversational tone as if you're chatting with a friend.
 
-Recent conversation:
-${conversation}
+        Recent conversation:
+        ${conversation}
 
-User: ${input.trim()}
-Assistant:`;
+        User: ${input.trim()}
+        Assistant:`;
 
       // Use the AI SDK to generate a response with the Groq API
       const { text } = await generateText({
         model: groqClient("llama-3.3-70b-versatile"),
         prompt,
-        maxTokens: 400,
+        maxTokens: 5500,
         temperature: 0.8,
       });
 
@@ -142,7 +180,7 @@ Assistant:`;
         const { text } = await generateText({
           model: groqClient("llama-3.1-8b-instant"),
           prompt: `You are Nayon Kanti Halder's friendly portfolio assistant. Answer warmly about his skills as a Full Stack Developer. User asked: ${input.trim()}`,
-          maxTokens: 300,
+          maxTokens: 5500,
           temperature: 0.8,
         });
 
@@ -192,26 +230,31 @@ Assistant:`;
         >
           <MessageCircle className='h-7 w-7' />
         </Button>
+        <ActiveBadge isActive={isAIActive} />
       </div>
 
       <Drawer open={isOpen} onOpenChange={setIsOpen}>
-        <DrawerContent className='h-[85vh] max-h-[600px] z-[10000] mx-auto max-w-md'>
+        <DrawerContent className='h-[85vh] max-h-[600px] z-[10000] mx-auto max-w-lg bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 '>
           {/* Header */}
           <DrawerHeader className='border-b bg-gradient-to-r from-blue-50 to-purple-50 pb-4'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-3'>
-                <Avatar className='h-10 w-10 border-2 border-white shadow-md'>
-                  <AvatarImage src='/api/placeholder/40/40' alt='Nayon AI' />
-                  <AvatarFallback className='bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold'>
-                    AI
-                  </AvatarFallback>
-                </Avatar>
+                {/* Avatar with Active Badge */}
+                <div className='relative'>
+                  <Avatar className='h-10 w-10 border-2 border-white shadow-md'>
+                    <AvatarImage src='/api/placeholder/40/40' alt='Nayon AI' />
+                    <AvatarFallback className='bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold'>
+                      AI
+                    </AvatarFallback>
+                  </Avatar>
+                  <ActiveBadge isActive={isAIActive} />
+                </div>
                 <div>
                   <DrawerTitle className='text-lg font-semibold text-gray-800'>
                     Chat with Nayon's AI
                   </DrawerTitle>
                   <DrawerDescription className='text-sm text-gray-600'>
-                    Online • Ask me anything!
+                    {isAIActive ? "Online • Ask me anything!" : "Processing..."}
                   </DrawerDescription>
                 </div>
               </div>
@@ -249,27 +292,35 @@ Assistant:`;
                     : "mr-auto"
                 )}
               >
-                {/* Avatar */}
-                <Avatar className='h-8 w-8 flex-shrink-0 shadow-sm'>
-                  {message.role === "assistant" ? (
-                    <>
-                      <AvatarImage
-                        src='/api/placeholder/32/32'
-                        alt='AI Assistant'
-                      />
-                      <AvatarFallback className='bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-semibold'>
-                        <Bot className='h-4 w-4' />
-                      </AvatarFallback>
-                    </>
-                  ) : (
-                    <>
-                      <AvatarImage src='/api/placeholder/32/32' alt='User' />
-                      <AvatarFallback className='bg-gradient-to-r from-green-500 to-teal-600 text-white text-xs font-semibold'>
-                        <User className='h-4 w-4' />
-                      </AvatarFallback>
-                    </>
+                {/* Avatar with Badge for message bubbles */}
+                <div className='relative'>
+                  <Avatar className='h-8 w-8 flex-shrink-0 shadow-sm'>
+                    {message.role === "assistant" ? (
+                      <>
+                        <AvatarImage
+                          src='/api/placeholder/32/32'
+                          alt='AI Assistant'
+                        />
+                        <AvatarFallback className='bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-semibold'>
+                          <Bot className='h-4 w-4' />
+                        </AvatarFallback>
+                      </>
+                    ) : (
+                      <>
+                        <AvatarImage src='/api/placeholder/32/32' alt='User' />
+                        <AvatarFallback className='bg-gradient-to-r from-green-500 to-teal-600 text-white text-xs font-semibold'>
+                          <User className='h-4 w-4' />
+                        </AvatarFallback>
+                      </>
+                    )}
+                  </Avatar>
+                  {message.role === "assistant" && (
+                    <ActiveBadge isActive={true} size='small' />
                   )}
-                </Avatar>
+                  {message.role === "user" && (
+                    <ActiveBadge isActive={true} size='small' />
+                  )}
+                </div>
 
                 {/* Message Bubble */}
                 <div className='flex flex-col max-w-full'>
@@ -289,7 +340,7 @@ Assistant:`;
                   {/* Timestamp */}
                   <span
                     className={cn(
-                      "text-xs text-gray-500 mt-1 px-1",
+                      "text-xs text-gray-700 mt-1 px-1",
                       message.role === "user" ? "text-right" : "text-left"
                     )}
                   >
@@ -302,11 +353,14 @@ Assistant:`;
             {/* Loading Indicator */}
             {isLoading && (
               <div className='flex items-end gap-3 max-w-[85%] animate-in slide-in-from-bottom-2 duration-300'>
-                <Avatar className='h-8 w-8 shadow-sm'>
-                  <AvatarFallback className='bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs'>
-                    <Bot className='h-4 w-4' />
-                  </AvatarFallback>
-                </Avatar>
+                <div className='relative'>
+                  <Avatar className='h-8 w-8 shadow-sm'>
+                    <AvatarFallback className='bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs'>
+                      <Bot className='h-4 w-4' />
+                    </AvatarFallback>
+                  </Avatar>
+                  <ActiveBadge isActive={false} size='small' />
+                </div>
                 <div className='bg-white rounded-2xl rounded-bl-md px-4 py-3 border border-gray-200 shadow-sm'>
                   <div className='flex items-center space-x-2'>
                     <div className='flex space-x-1'>
@@ -336,7 +390,7 @@ Assistant:`;
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   disabled={isLoading}
-                  className='pr-12 rounded-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 bg-gray-50 hover:bg-white transition-colors'
+                  className='pr-12 rounded-full text-black border-gray-300 focus:border-blue-500 focus:ring-blue-500 bg-gray-50 hover:bg-white transition-colors'
                 />
               </div>
               <Button
@@ -352,7 +406,8 @@ Assistant:`;
 
             {/* Footer text */}
             <p className='text-xs text-gray-500 text-center mt-2'>
-              Powered by AI • Ask about Nayon's skills & projects
+              Powered by AI • Ask me anything about Nayon's skills, projects, or
+              experience! 😊
             </p>
           </DrawerFooter>
         </DrawerContent>
@@ -427,7 +482,7 @@ Assistant:`;
 //         )
 //         .join("\n");
 
-//       const prompt = `You are a helpful AI assistant for Nayon Kanti Halder's portfolio website. 
+//       const prompt = `You are a helpful AI assistant for Nayon Kanti Halder's portfolio website.
 
 // About Nayon:
 // - Full Stack Developer specializing in MERN stack
