@@ -1,5 +1,6 @@
 {
-  "name": "my-v0-project",
+  "name": "my-new-portfolio",
+  "description": "A modern portfolio website built with Next.js, showcasing my projects and skills.",
   "version": "0.1.0",
   "private": true,
   "scripts": {
