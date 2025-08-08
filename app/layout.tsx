@@ -1,4 +1,4 @@
-// app\layout.tsx
+// app/layout.tsx
 import type React from "react";
 import type { Metadata } from "next";
 import ClientLayout from "./clientLayout";
@@ -13,6 +13,9 @@ export const metadata: Metadata = {
     "Full Stack Developer, MERN Stack, AI Integration, React, Next.js, Node.js, MongoDB, TypeScript",
   authors: [{ name: "Nayon Kanti Halder" }],
   creator: "Nayon Kanti Halder",
+  verification: {
+    google: "iDw2dJDJR72GUDzLzw2fi4Y6YUmYO-Hg2_8yg28jA4c",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -39,6 +42,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <ClientLayout>{children}</ClientLayout>;
+  return (
+    <html lang="en">
+      <body>
+        <ClientLayout>{children}</ClientLayout>
+      </body>
+    </html>
+  );
 }
-
